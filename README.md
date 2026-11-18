@@ -6,7 +6,7 @@ FitMate AI is an educational fitness-planning assistant built in Google Colab. I
 
 Beginners often struggle to turn a fitness goal into a realistic routine. FitMate separates profile validation, workout planning, nutrition planning, and safety review into specialized agents so that generated plans can be checked against the user's needs.
 
-## Repository contents
+## Project structure
 
 - `FitMate_AI_Multi_Agent_Fitness_Planner.ipynb`: complete implementation, sample profile, monitoring, and demonstration tests.
 - `README.md`: project overview, architecture, setup, and usage.
@@ -30,7 +30,7 @@ Beginners often struggle to turn a fitness goal into a realistic routine. FitMat
 | `SafetyReviewAgent` | Reviews drafts and returns a JSON score, approval decision, issues, and feedback. |
 | `FitnessPlannerManager` | Coordinates agents, routes rejected or flagged profiles, requests one revision, and sanitizes final output. |
 
-## Architecture and workflow
+## Architecture diagram and workflow
 
 ```mermaid
 flowchart TD
@@ -51,7 +51,7 @@ flowchart TD
     L --> O{Output filter passes?}
     O -- No --> P[Block generated output]
     O -- Yes --> Q{Final review approved?}
-    Q -- No --> R[Return draft marked for human review]
+    Q -- No --> R[Withhold draft for human review]
     Q -- Yes --> S[Return final plan]
     T[Shared state and timestamped execution logs] -.-> B
     T -.-> J
@@ -94,7 +94,7 @@ The notebook displays the workflow status, workout plan, nutrition guidance, rev
 
 The save cell writes `fitmate_final_plan.txt` and `fitmate_execution_logs.csv` in the Colab runtime. Download these files from Colab if you want to keep them after the session ends.
 
-Possible statuses include `completed`, `rejected`, `blocked`, `needs_professional_guidance`, `blocked_by_output_filter`, and `needs_human_review`.
+Possible statuses include `completed`, `rejected`, `blocked`, `needs_professional_guidance`, `blocked_by_output_filter`, and `needs_human_review`, and `failed`.
 
 ## Security mechanisms
 
@@ -103,36 +103,28 @@ Possible statuses include `completed`, `rejected`, `blocked`, `needs_professiona
 - Prompts that treat profile and draft text as untrusted data.
 - Professional-guidance routing for recognized health-related limitations.
 - Output filtering for common email and phone patterns and selected unsafe phrases.
-- Automated review with a limited revision loop and a human-review status when approval fails.
+- Automated review with a limited revision loop and a human-review status that withholds drafts when approval fails.
 
 These are lightweight educational safeguards. Pattern matching can miss attacks or flag harmless content, and the notebook does not provide a human approval interface.
 
 ## Testing
 
-Section 17 contains printed demonstrations for a normal profile, an invalid age, a prompt-injection attempt, email redaction, and detection of a medical limitation. These checks exercise deterministic guardrails without extra model calls; they are not a comprehensive automated test suite. The normal generation workflow in section 15 requires Groq access.
+Section 17 uses assertions and scripted model responses to check the actual workflow without API calls. It covers normal completion, logging and timing, calculator output, invalid input, prompt injection, professional-guidance routing, the revision loop, failed review, malformed review JSON, invalid approval types, unsafe output, PII masking, and a simulated API outage.
 
-## Project requirements mapping
-
-| Requirement documented in the notebook | Implementation |
-|---|---|
-| Problem definition and target users | Beginner-focused weekly fitness planning |
-| At least three specialized agents | Profile validation, workout planning, nutrition planning, and safety review |
-| Orchestration and decision points | Central manager with validation, safety routing, review, and filtering decisions |
-| Advanced reasoning pattern | Reflection / Self-Critique with one revision |
-| Tool integration | Python BMI and energy calculator |
-| At least two security mechanisms | Input validation, injection detection, and output sanitization |
-| Monitoring | Timestamped logs and Pandas summary |
-| Testing | Demonstrations of normal, invalid, attack, sanitization, and health-limitation scenarios |
-| Documentation | Setup, usage, technologies, agent roles, architecture, and future improvements |
+These tests check control flow and guardrails. Run section 15 with a Groq key to assess the quality of live generated plans.
 
 ## Limitations and future improvements
 
 - Add a verified exercise database and reliable nutrition sources.
-- Validate reviewer output with a strict schema.
-- Expand security and failure-case testing, including model/API errors.
+- Expand structured validation of model outputs.
+- Expand adversarial testing and live model evaluation.
 - Add user feedback, progress tracking, and a human approval interface.
 - Improve input and output filtering beyond phrase matching.
 - Consider LangGraph for more advanced conditional orchestration.
 
 FitMate provides general educational wellness information. It does not diagnose conditions or prescribe treatment. Users with injuries, medical conditions, pregnancy, or other special circumstances should seek qualified professional guidance before following a personalized plan.
 
+
+## Academy reference
+
+[SDAIA Academy GitHub](https://github.com/SDAIAAcademy)
