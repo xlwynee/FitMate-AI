@@ -128,3 +128,8 @@ FitMate provides general educational wellness information. It does not diagnose 
 ## Academy reference
 
 [SDAIA Academy GitHub](https://github.com/SDAIAAcademy)
+
+## Contributors
+
+- [Nurah Alsamlaq](https://github.com/NoraAlsamlag)
+- [Leen Maghrabi](https://github.com/leenrym2008-crypto)
